@@ -1,6 +1,8 @@
 import sys
 
-def main(path="./inputs/day1.txt"):
+DAY = "01"
+
+def main(path=f"../../inputs/day{DAY}/day{DAY}.txt"):
     part1Answer = part1(path)
     part2Answer = part2(path)
 
@@ -80,7 +82,7 @@ def part2(inputPath, debug=0):
 if __name__ == "__main__":
     if(len(sys.argv) == 2):
         if(sys.argv[1] == "test"):
-            main("./inputs/day1Test.txt")
+            main(f"../../inputs/day{DAY}/day{DAY}Test.txt")
         else:
             main()
     else:
