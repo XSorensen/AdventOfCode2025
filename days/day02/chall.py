@@ -2,7 +2,7 @@ import sys
 
 DAY = "02"
 
-def main(path=f"../inputs/day{DAY}/day{DAY}.txt"):
+def main(path=f"../../inputs/day{DAY}/day{DAY}.txt"):
     part1Answer = part1(path)
     part2Answer = part2(path)
 
@@ -42,7 +42,7 @@ def isValidId(id: int):
     
     # check if string is two repeated sequences
     # only occurs if string has an even length
-    if(idLen % 2 == 0):                   # even length id
+    if(idLen % 2 == 0):                   
         lhs = strId[:idLen // 2]
         rhs = strId[idLen // 2 :]
         if(lhs == rhs):
