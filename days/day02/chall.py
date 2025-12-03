@@ -11,7 +11,9 @@ def main(path=f"../../inputs/day{DAY}/day{DAY}.txt"):
 
     return 0
 
-# count number of times position ends on zero after a rotation
+# sum invalid ids within ranges
+# an id is invalid if it contains the same repeated sequence
+# ex: 11 and 5454 are invalid, but 101 is fine
 def part1(inputPath, debug=0):
     with open(inputPath) as inFile:
         input = inFile.read()
@@ -26,18 +28,33 @@ def part1(inputPath, debug=0):
         low = int(low); high = int(high)
 
         for id in range(low, high + 1):
-            if(not isValidId(id)):
+            if(not isValidIdPart1(id)):
                 sumOfInvalidIds += id
 
     return sumOfInvalidIds
 
-# count number of times the dial passes 0 as well as lands on it
+# now any repeated sequence is invalid
 def part2(inputPath, debug=0):
-    pass
+    with open(inputPath) as inFile:
+        input = inFile.read()
 
-def isValidId(id: int):
+    bands = input.split(",")    
+
+    sumOfInvalidIds = 0
+
+    # check values within each range   
+    for band in bands:
+        low, high = band.split("-")
+        low = int(low); high = int(high)
+
+        for id in range(low, high + 1):
+            if(not isValidIdPart2(id)):
+                sumOfInvalidIds += id
+
+    return sumOfInvalidIds
+
+def isValidIdPart1(id: int) -> bool:
     strId = str(id)
-
     idLen = len(strId)
     
     # check if string is two repeated sequences
@@ -49,6 +66,26 @@ def isValidId(id: int):
             return False
 
     return True
+
+def isValidIdPart2(id: int) -> bool:
+    strId = str(id)
+    idLen = len(strId)
+
+    maxSeqLen = idLen // 2
+    for seqLen in range(1, maxSeqLen + 1):
+        seq = strId[:seqLen]
+        seqRepeats: bool = True
+
+        for testSeqIdx in range(seqLen, idLen, seqLen):
+            if(seq != strId[testSeqIdx:testSeqIdx + seqLen]):
+                seqRepeats = False
+
+        if(seqRepeats):
+                return False
+
+    return True
+
+
 
 if __name__ == "__main__":
     if(len(sys.argv) == 2):
