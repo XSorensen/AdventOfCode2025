@@ -17,15 +17,22 @@ def part1(inputPath, debug=0):
 
     totalJoltage = 0
     for battery in batteries:
-        totalJoltage += getMaxJoltage(battery)
+        totalJoltage += getMaxJoltagePart1(battery)
 
     return totalJoltage
 
 def part2(inputPath, debug=0):
     with open(inputPath) as inFile:
-        input = inFile.read()
+        batteries = inFile.read().splitlines()
 
-def getMaxJoltage(battery):
+    totalJoltage = 0
+    for battery in batteries:
+        totalJoltage += getMaxJoltagePart2(battery)
+
+    return totalJoltage
+
+# select two digits from the battery, digit 1 must appear before digit 2, that result in the highest concatenated numeric value
+def getMaxJoltagePart1(battery):
     maxVal: int = 0
     maxIdx: int = -1
 
@@ -46,6 +53,30 @@ def getMaxJoltage(battery):
 
     retVal = int(f"{firstNum}{maxVal}")
 
+    # print(f"{battery}\n\tMax Joltage: {retVal} | Max Idx: {maxIdx}")
+
+    return retVal
+
+# select 12 digits from the battery whose value when the digits are concatenated is maximized
+# digits must appear in the same relative ordering as they appeard in the original battery
+def getMaxJoltagePart2(battery):
+    maxVal: int = 0
+    maxIdx: int = -1
+
+    batLen = len(battery)
+    numRemainingToTurnOn = 12
+    joltages = []
+    for numRemainingToTurnOn in range(12, 0, -1):
+        maxVal = 0
+        for i in range(maxIdx + 1, batLen - numRemainingToTurnOn + 1):
+            joltage = int(battery[i])
+            if(joltage > maxVal):
+                maxVal = joltage
+                maxIdx = i
+            numRemainingToTurnOn -= 1
+        joltages.append(str(maxVal))
+
+    retVal = int("".join(joltages))
     # print(f"{battery}\n\tMax Joltage: {retVal} | Max Idx: {maxIdx}")
 
     return retVal
