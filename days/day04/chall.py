@@ -26,39 +26,51 @@ class CustomGrid():
         return (len(self.grid), len(self.grid[0]))
 
 def main(path=f"../../inputs/day{DAY}/day{DAY}.txt", debug=0):
-    part1Answer = part1(path, debug)
-    # part2Answer = part2(path, debug)
+    part1Answer = parts(path, debug=debug)
+    part2Answer = parts(path, repeatUntilNoneCanBeRemoved=True, debug=debug)
 
     print(f"Part 1 Answer: {part1Answer}")
-    # print(f"Part 2 Answer: {part2Answer}")
+    print(f"Part 2 Answer: {part2Answer}")
 
     return 0
 
-def part1(inputPath, debug=0):
+def parts(inputPath, repeatUntilNoneCanBeRemoved=False, debug=0):
     with open(inputPath) as inFile:
         rows = inFile.read().splitlines()
 
+    totalTargets = 0
     availableTargets = 0
     threshold = 4
 
     grid = CustomGrid([[col for col in row] for row in rows])
-    print(grid, end="\n\n\n\n")
+    if(debug):
+        print(grid, end="\n\n\n\n")
 
     rows, cols = grid.shape()
 
-    for x in range(rows):
-        for y in range(cols):
-            if(grid[(x,y)] != '@'):
-                continue
+    while(availableTargets > 0 or totalTargets == 0):
+        availableTargets = 0       
 
-            if(getNumRollsAround(grid, x, y) < threshold):
-                availableTargets += 1
-                # grid[(x, y)] = 'x'
+        for x in range(rows):
+            for y in range(cols):
+                if(grid[(x,y)] != '@'):
+                    continue
+
+                if(getNumRollsAround(grid, x, y) < threshold):
+                    availableTargets += 1
+                    
+                    if(repeatUntilNoneCanBeRemoved):
+                        grid[(x, y)] = 'x'
+
+        totalTargets += availableTargets
+
+        if(not repeatUntilNoneCanBeRemoved):
+            break
 
     # print(f"RowCount: {len(grid)} | ColCount: {len(grid[0])}")
     print(grid)
 
-    return availableTargets
+    return totalTargets
 
 def getNumRollsAround(grid, x=0, y=0):
     cords = [
