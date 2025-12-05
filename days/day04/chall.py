@@ -2,29 +2,6 @@ import sys
 
 DAY = "04"
 
-class CustomGrid():
-    def __init__(self, grid):
-        self.grid = grid
-
-    def __getitem__(self, cord):
-        x = cord[0]
-        y = cord[1]
-
-        if(x < 0 or x >= len(self.grid)):
-            return '.'
-        elif(y < 0 or y >= len(self.grid[0])):
-            return '.'
-        return self.grid[cord[0]][cord[1]]
-    
-    def __setitem__(self, cord, item):
-        self.grid[cord[0]][cord[1]] = item
-
-    def __str__(self):
-        return "\n".join(["".join(row) for row in self.grid])
-
-    def shape(self):
-        return (len(self.grid), len(self.grid[0]))
-
 def main(path=f"../../inputs/day{DAY}/day{DAY}.txt", debug=0):
     part1Answer = parts(path, debug=debug)
     part2Answer = parts(path, repeatUntilNoneCanBeRemoved=True, debug=debug)
@@ -66,9 +43,9 @@ def parts(inputPath, repeatUntilNoneCanBeRemoved=False, debug=0):
 
         if(not repeatUntilNoneCanBeRemoved):
             break
-
-    # print(f"RowCount: {len(grid)} | ColCount: {len(grid[0])}")
-    print(grid)
+    
+    if(debug):
+        print(grid)
 
     return totalTargets
 
@@ -90,65 +67,28 @@ def getNumRollsAround(grid, x=0, y=0):
 
     return count
 
-def part2(inputPath, debug=0):
-    with open(inputPath) as inFile:
-        batteries = inFile.read().splitlines()
+class CustomGrid():
+    def __init__(self, grid):
+        self.grid = grid
 
-    totalJoltage = 0
-    for battery in batteries:
-        totalJoltage += getMaxJoltagePart2(battery)
+    def __getitem__(self, cord):
+        x = cord[0]
+        y = cord[1]
 
-    return totalJoltage
+        if(x < 0 or x >= len(self.grid)):
+            return '.'
+        elif(y < 0 or y >= len(self.grid[0])):
+            return '.'
+        return self.grid[cord[0]][cord[1]]
+    
+    def __setitem__(self, cord, item):
+        self.grid[cord[0]][cord[1]] = item
 
-# select two digits from the battery, digit 1 must appear before digit 2, that result in the highest concatenated numeric value
-def getMaxJoltagePart1(battery):
-    maxVal: int = 0
-    maxIdx: int = -1
+    def __str__(self):
+        return "\n".join(["".join(row) for row in self.grid])
 
-    # final num must be reserved to be the second number
-    for i in range(len(battery) - 1):
-        # print(battery[i])
-        joltage = int(battery[i])
-        if(joltage > maxVal):
-            maxVal = joltage
-            maxIdx = i
-
-    firstNum = maxVal
-    maxVal = 0
-    for i in range(maxIdx + 1, len(battery)):
-        joltage = int(battery[i])
-        if(joltage > maxVal):
-            maxVal = joltage
-
-    retVal = int(f"{firstNum}{maxVal}")
-
-    # print(f"{battery}\n\tMax Joltage: {retVal} | Max Idx: {maxIdx}")
-
-    return retVal
-
-# select 12 digits from the battery whose value when the digits are concatenated is maximized
-# digits must appear in the same relative ordering as they appeard in the original battery
-def getMaxJoltagePart2(battery):
-    maxVal: int = 0
-    maxIdx: int = -1
-
-    batLen = len(battery)
-    numRemainingToTurnOn = 12
-    joltages = []
-    for numRemainingToTurnOn in range(12, 0, -1):
-        maxVal = 0
-        for i in range(maxIdx + 1, batLen - numRemainingToTurnOn + 1):
-            joltage = int(battery[i])
-            if(joltage > maxVal):
-                maxVal = joltage
-                maxIdx = i
-            numRemainingToTurnOn -= 1
-        joltages.append(str(maxVal))
-
-    retVal = int("".join(joltages))
-    # print(f"{battery}\n\tMax Joltage: {retVal} | Max Idx: {maxIdx}")
-
-    return retVal
+    def shape(self):
+        return (len(self.grid), len(self.grid[0]))
 
 if __name__ == "__main__":
     if(len(sys.argv) == 2):
